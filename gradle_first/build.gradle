@@ -1,0 +1,80 @@
+defaultTasks "hello", "upper"
+
+task hello << {
+	println "Hello world!"
+}
+
+hello.doFirst {
+	println "Hello first"
+}
+
+hello.doLast {
+	println "Hello last"
+}
+
+hello << {
+	println "Hello add"
+}
+
+task upper << {
+	String str = "mY_nAmE"
+	println 'Original : ' + str
+	println 'Upper case : ' + str.toUpperCase()
+}
+
+task count << {
+	4.times {
+		print "$it"
+	}
+	println ""
+}
+
+task intro(dependsOn: hello) << {
+	println "I'm Gradle"
+}
+
+task taskX(dependsOn: 'taskY') << {
+	println "taskX"
+}
+
+task taskY << {
+	println "taskY"
+}
+
+task myTask {
+	ext.nameValue = '我是谁'
+}
+
+task printSelfProperty << {
+	println myTask.nameValue
+}
+
+task loadFile << {
+	fileList("./src").each{
+		File file -> 
+		println "I'm fond of $file.name"
+	}
+}
+
+File[] fileList(String dir) {
+	file(dir).listFiles({file -> file.isFile()} as FileFilter).sort()
+}
+
+task distribution << {
+	println "We build the zip with version=$version"
+}
+
+task release(dependsOn: "distribution") << {
+	println "We release now"
+}
+
+gradle.taskGraph.whenReady {
+	taskGraph ->
+	if(taskGraph.hasTask(release)) {
+		version = "1.0"
+	}else {
+		version = "1.0-SNAPSHOT"
+	}
+}
+
+
