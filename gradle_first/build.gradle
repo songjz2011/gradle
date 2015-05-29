@@ -1,3 +1,6 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
 defaultTasks "hello", "upper"
 
 task hello << {
